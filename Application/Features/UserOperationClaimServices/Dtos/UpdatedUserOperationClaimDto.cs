@@ -1,6 +1,6 @@
-﻿namespace Domain.Dtos;
+﻿namespace Application.Features.UserOperationClaimServices.Dtos;
 
-public class UserOperationClaimDto
+public class UpdatedUserOperationClaimDto
 {
     public int Id { get; set; }
     public int UserId { get; set; }

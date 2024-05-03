@@ -1,6 +1,7 @@
-﻿using Application.Features.Auth.LoginServices;
+﻿using Application.Features.Auth.Dtos;
+using Application.Features.Auth.LoginServices;
 using Core.Entities;
-using Domain.Dtos;
+using Core.Security.JWT;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebAPI.Controllers;
@@ -19,7 +20,7 @@ public class AuthController : ControllerBase
     [HttpPost("login")]
     public async Task<IActionResult> Login(LoginDto loginDto)
     {
-        CommonResponse<LoginResponse> response = await _loginService.LoginAsync(loginDto);
+        CommonResponse<AccessToken> response = await _loginService.LoginAsync(loginDto);
         return Ok(response);
     }
 }

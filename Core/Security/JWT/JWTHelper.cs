@@ -53,7 +53,7 @@ public class JWTHelper : ITokenHelper
     private IEnumerable<Claim> SetClaims(SecurityUser user, List<OperationClaim> operationClaims)
     {
         var claims = new List<Claim>();
-        claims.AddNameIdentifier(user.Id.ToString());
+        claims.AddNameIdentifier(user.EmployeeId.ToString());
         claims.AddEmail(user.Email);
         claims.AddName($"{user.FirstName} {user.LastName}");
         claims.AddRoles(operationClaims.Select(c => c.Name).ToArray());

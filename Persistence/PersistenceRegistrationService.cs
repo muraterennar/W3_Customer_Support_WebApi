@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Persistence.Repositories.OperationClaimRepositories;
 using Persistence.Repositories.RepositoryMaps;
+using Persistence.Repositories.UserDetailRepository;
 using Persistence.Repositories.UserOperationClaimRepositories;
 using Persistence.Repositories.UserRepositories;
 
@@ -12,6 +13,7 @@ public static class PersistenceRegistrationService
     {
         service.AddScoped<IRepositoryMap, RepositoryMap>();
         service.AddScoped<IUserRepository, UserRepository>();
+        service.AddScoped<IUserDetailRepository, UserDetailRepository>();
         service.AddScoped<IOperationClaimRepository, OperationClaimRepository>();
         service.AddScoped<IUserOperationClaimReposiyory, UserOperationClaimRepository>();
         return service;

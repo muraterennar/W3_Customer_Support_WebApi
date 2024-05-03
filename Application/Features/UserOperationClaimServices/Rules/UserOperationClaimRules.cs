@@ -7,7 +7,7 @@ namespace Application.Features.UserOperationClaimServices.Rules;
 
 public class UserOperationClaimRules : BaseBusinessRules
 {
-    string commonQuery = "SELECT [Id],[UserId],[OperationClaimId],[CreatedDate],[UpdatedDate],[DeletedDate] FROM [CatalystQa].[USER_OPERATION_CLAIMS]";
+    string commonQuery = "SELECT [Id],[UserId],[OperationClaimId],[CreatedDate],[UpdatedDate] FROM [CatalystQa].[USER_OPERATION_CLAIMS]";
 
     private readonly IUserOperationClaimReposiyory _userOperationClaimReposiyory;
 

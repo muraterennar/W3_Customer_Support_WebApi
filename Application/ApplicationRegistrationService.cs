@@ -1,8 +1,10 @@
 ﻿using Application.Features.Auth.LoginServices;
+using Application.Features.Auth.TokenServices;
 using Application.Features.OperationClaimServices;
 using Application.Features.UserOperationClaimServices;
 using Application.Features.UserService;
 using Core.Rules;
+using Core.Security.JWT;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 
@@ -20,6 +22,8 @@ public static class ApplicationRegistrationService
         services.AddScoped<IUserOperationClaimService, UserOperationClaimManager>();
         services.AddScoped<ILoginService, LoginManager>();
         services.AddScoped<IUserService, UserService>();
+        services.AddScoped<ITokenService, TokenManager>();
+        services.AddScoped<ITokenHelper, JWTHelper>();
 
         return services;
     }

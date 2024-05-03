@@ -21,6 +21,20 @@ public class UsersController : ControllerBase
         return Ok(response);
     }
 
+    [HttpGet("GetAllUserDetail")]
+    public async Task<IActionResult> GetAllUserDetailAsync()
+    {
+        var result = await _userService.GetAllUserDetailAsync();
+        return Ok(result);
+    }
+
+    [HttpGet("GetByUserIdForDetailList/{userId}")]
+    public async Task<IActionResult> GetUserIdForUserDetailListAsync([FromRoute] int userId)
+    {
+        var response = await _userService.GetUserIdForUserDetailListAsync(userId);
+        return Ok(response);
+    }
+
     [HttpGet("GetById/{id}")]
     public async Task<IActionResult> GetByIdAsync([FromRoute] int id)
     {

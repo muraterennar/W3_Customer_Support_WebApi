@@ -1,8 +1,6 @@
-﻿using Core.Entities;
+﻿namespace Core.Security.Entities;
 
-namespace Core.Security.Entities;
-
-public class SecurityUser:Entity<int>
+public class SecurityUser
 {
     public int EmployeeId { get; set; }
     public string EmployeeCode { get; set; }
@@ -14,7 +12,6 @@ public class SecurityUser:Entity<int>
 
     public SecurityUser()
     {
-        EmployeeId = 0;
         EmployeeCode = string.Empty;
         FirstName = string.Empty;
         LastName = string.Empty;

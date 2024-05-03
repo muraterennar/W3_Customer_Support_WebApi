@@ -1,9 +1,10 @@
-﻿using Core.Entities;
-using Domain.Dtos;
+﻿using Application.Features.Auth.Dtos;
+using Core.Entities;
+using Core.Security.JWT;
 
 namespace Application.Features.Auth.LoginServices;
 
 public interface ILoginService
 {
-    Task<CommonResponse<LoginResponse>> LoginAsync(LoginDto loginDto);
+    Task<CommonResponse<AccessToken>> LoginAsync(LoginDto loginDto);
 }

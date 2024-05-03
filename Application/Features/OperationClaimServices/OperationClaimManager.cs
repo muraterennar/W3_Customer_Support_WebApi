@@ -9,7 +9,7 @@ namespace Application.Features.OperationClaimServices;
 
 public class OperationClaimManager : IOperationClaimService
 {
-    string commonQuery = "SELECT [Id],[Name],[CreatedDate],[UpdatedDate],[DeletedDate]FROM [CatalystQa].[OPERATION_CLAIMS]";
+    string commonQuery = "SELECT [Id],[Name],[CreatedDate],[UpdatedDate] FROM [CatalystQa].[OPERATION_CLAIMS]";
 
     private readonly IOperationClaimRepository _operationClaimRepository;
     private readonly OperationClaimRules _operationClaimRules;

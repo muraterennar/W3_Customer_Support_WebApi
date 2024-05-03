@@ -1,4 +1,5 @@
 ﻿using Domain.Entities;
+using Persistence.Repositories.UserDetailRepository;
 using Persistence.Repositories.UserRepositories;
 
 namespace Application.Features.UserService;
@@ -16,18 +17,35 @@ public class UserService : IUserService
         "[OLD_SGK_DAYS],[EXT_OFFTIME_MINUTES],[EXT_OFFTIME_DATE],[EMPLOYEE_KEP_ADRESS],[WORKTIPS_OPEN],[EINS_POINT],[BRUC_POINT]," +
         "[TEL_TYPE],[IS_VACCINE],[IS_COVID] FROM [CatalystQa].[EMPLOYEES]";
 
+    string userDetailCommonQuery = "SELECT [E].[EMPLOYEE_ID], [E].[COMPANY_ID], [E].[EMPLOYEE_NO],[E].[EMPLOYEE_EMAIL], [E].[EMPLOYEE_NAME], [E].[EMPLOYEE_SURNAME], [E].[EMPLOYEE_USERNAME], [EP].[POSITION_NAME], [UOC].[Id] AS [USER_OPERATION_CLAIM_ID], [OC].[Id] AS [OPERATION_CLAIM_ID], [OC].[Name] AS [OPERATION_NAME], [UG].[USER_GROUP_ID] AS [W3_OPERATION_ID], [UG].[USER_GROUP_NAME] AS [W3_OPERATION_NAME] FROM [CatalystQa].[EMPLOYEES] AS [E] LEFT JOIN [CatalystQa].[EMPLOYEE_POSITIONS] AS [EP] ON [E].[EMPLOYEE_ID] = [EP].[EMPLOYEE_ID] LEFT JOIN [CatalystQa].[USER_GROUP_EMPLOYEE] AS [UGE] ON [EP].[EMPLOYEE_ID] = [UGE].[EMPLOYEE_ID] LEFT JOIN [CatalystQa].[USER_GROUP] AS [UG] ON [UGE].[USER_GROUP_ID] = [UG].[USER_GROUP_ID] LEFT JOIN [CatalystQa].[USER_OPERATION_CLAIMS] AS [UOC] ON [E].[EMPLOYEE_ID] = [UOC].[UserId] LEFT JOIN [CatalystQa].[OPERATION_CLAIMS] AS [OC] ON [UOC].[OperationClaimId] = [OC].[Id]";
+
 
     private readonly IUserRepository _userRepository;
+    private readonly IUserDetailRepository _userDetailRepository;
 
-    public UserService(IUserRepository userRepository)
+    public UserService(IUserRepository userRepository, IUserDetailRepository userDetailRepository)
     {
         _userRepository = userRepository;
+        _userDetailRepository = userDetailRepository;
     }
 
     public async Task<List<Employee>> GetAllUsersAsync()
     {
         List<Employee> employees = await _userRepository.GetAll(commonQuery);
         return employees;
+    }
+
+    public async Task<List<UserDetail>> GetAllUserDetailAsync()
+    {
+        List<UserDetail> userDetails = await _userDetailRepository.GetAll(userDetailCommonQuery);
+        return userDetails;
+    }
+
+    public async Task<List<UserDetail>> GetUserIdForUserDetailListAsync(int userId)
+    {
+        string query = $"{userDetailCommonQuery} WHERE [E].[EMPLOYEE_ID] = '{userId}'";
+        List<UserDetail> userDetails = await _userDetailRepository.GetAll(query);
+        return userDetails;
     }
 
     public async Task<Employee> GetByIdForUserAsync(int id)
@@ -57,6 +75,14 @@ public class UserService : IUserService
     public async Task<Employee> GetByEmailForUserAsync(string email)
     {
         string query = $"{commonQuery} WHERE [EMPLOYEE_EMAIL] = '{email}'";
+
+        Employee employee = await _userRepository.GetByAny(query);
+        return employee;
+    }
+
+    public async Task<Employee> GetByUsernameForUserAsync(string username)
+    {
+        string query = $"{commonQuery} WHERE [EMPLOYEE_USERNAME] = '{username}'";
 
         Employee employee = await _userRepository.GetByAny(query);
         return employee;

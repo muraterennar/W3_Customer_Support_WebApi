@@ -1,13 +1,13 @@
-﻿using Application.Features.UserOperationClaimServices.Rules;
+﻿using Application.Features.UserOperationClaimServices.Dtos;
+using Application.Features.UserOperationClaimServices.Rules;
 using Core.Security.Entities;
-using Domain.Dtos;
 using Persistence.Repositories.UserOperationClaimRepositories;
 
 namespace Application.Features.UserOperationClaimServices;
 
 public class UserOperationClaimManager : IUserOperationClaimService
 {
-    string commonQuery = "SELECT [Id],[UserId],[OperationClaimId],[CreatedDate],[UpdatedDate],[DeletedDate] FROM [CatalystQa].[USER_OPERATION_CLAIMS]";
+    string commonQuery = "SELECT [Id],[UserId],[OperationClaimId],[CreatedDate],[UpdatedDate] FROM [CatalystQa].[USER_OPERATION_CLAIMS]";
 
     private readonly IUserOperationClaimReposiyory _userOperationClaimRepository;
     private readonly UserOperationClaimRules _userOperationClaimRules;
@@ -32,11 +32,32 @@ public class UserOperationClaimManager : IUserOperationClaimService
         return result;
     }
 
+    public async Task<List<UserOperationClaimDto>> GetByUserIdForUserOperationClaimList(int userId)
+    {
+        string query = $"{commonQuery} WHERE [UserId] = '{userId}'";
+
+        List<UserOperationClaim> userOperationClaims = await _userOperationClaimRepository.GetAll(query);
+
+        List<UserOperationClaimDto> result = new();
+
+        if(userOperationClaims != null)
+        {
+            result = userOperationClaims.Select(userOperationClaim => new UserOperationClaimDto
+            {
+                Id = userOperationClaim.Id,
+                UserId = userOperationClaim.UserId,
+                OperationClaimId = userOperationClaim.OperationClaimId
+            }).ToList();
+        }
+
+        return result;
+    }
+
     public async Task<UserOperationClaimDto> GetByIdForUserOperationClaim(int id)
     {
         await _userOperationClaimRules.IsUserOperationClaimNotExist(id);
 
-        string query = $"{commonQuery} WHERE [Id] = {id}";
+        string query = $"{commonQuery} WHERE [Id] = '{id}";
         UserOperationClaim userOperationClaim = await _userOperationClaimRepository.GetByAny(query);
 
         UserOperationClaimDto result = new UserOperationClaimDto
@@ -53,7 +74,7 @@ public class UserOperationClaimManager : IUserOperationClaimService
     {
         await _userOperationClaimRules.IsUserIdExist(userId);
 
-        string query = $"{commonQuery} WHERE [UserId] = {userId}";
+        string query = $"{commonQuery} WHERE [UserId] = '{userId}'";
         UserOperationClaim userOperationClaim = await _userOperationClaimRepository.GetByAny(query);
 
         UserOperationClaimDto result = new UserOperationClaimDto
@@ -70,7 +91,7 @@ public class UserOperationClaimManager : IUserOperationClaimService
     {
         await _userOperationClaimRules.IsUserOperationClaimExist(operationId);
 
-        string query = $"{commonQuery} WHERE [OperationClaimId] = {operationId}";
+        string query = $"{commonQuery} WHERE [OperationClaimId] = '{operationId}'";
         UserOperationClaim userOperationClaim = await _userOperationClaimRepository.GetByAny(query);
 
         UserOperationClaimDto result = new UserOperationClaimDto
@@ -83,7 +104,7 @@ public class UserOperationClaimManager : IUserOperationClaimService
         return result;
     }
 
-    public async Task<UserOperationClaimDto> Add(UserOperationClaimDto userOperationClaimDto)
+    public async Task<AddedUserOperationClaimDto> Add(AddedUserOperationClaimDto userOperationClaimDto)
     {
         await _userOperationClaimRules.IsUserOperationClaimExist(userOperationClaimDto.UserId, userOperationClaimDto.OperationClaimId);
 
@@ -97,9 +118,8 @@ public class UserOperationClaimManager : IUserOperationClaimService
         string query = $"INSERT INTO [CatalystQa].[USER_OPERATION_CLAIMS]([UserId], [OperationClaimId], [CreatedDate], [UpdatedDate]) VALUES (@UserId, @OperationClaimId, @CreatedDate, @UpdatedDate)";
         UserOperationClaim createdUserOperationClaim = await _userOperationClaimRepository.Add(userOperationClaimEntity, query);
 
-        userOperationClaimDto = new UserOperationClaimDto
+        userOperationClaimDto = new AddedUserOperationClaimDto
         {
-            Id = createdUserOperationClaim.Id,
             UserId = createdUserOperationClaim.UserId,
             OperationClaimId = createdUserOperationClaim.OperationClaimId,
         };
@@ -107,7 +127,7 @@ public class UserOperationClaimManager : IUserOperationClaimService
         return userOperationClaimDto;
     }
 
-    public async Task<UserOperationClaimDto> Update(UserOperationClaimDto userOperationClaimDto)
+    public async Task<UpdatedUserOperationClaimDto> Update(UpdatedUserOperationClaimDto userOperationClaimDto)
     {
         await _userOperationClaimRules.IsUserOperationClaimNotExist(userOperationClaimDto.UserId, userOperationClaimDto.OperationClaimId);
 
@@ -123,7 +143,7 @@ public class UserOperationClaimManager : IUserOperationClaimService
 
         UserOperationClaim updatedUserOperationClaim = await _userOperationClaimRepository.Update(userOperationClaim, query);
 
-        userOperationClaimDto = new UserOperationClaimDto
+        userOperationClaimDto = new UpdatedUserOperationClaimDto
         {
             Id = updatedUserOperationClaim.Id,
             UserId = updatedUserOperationClaim.UserId,
@@ -134,7 +154,7 @@ public class UserOperationClaimManager : IUserOperationClaimService
 
     }
 
-    public async Task<UserOperationClaimDto> Delete(UserOperationClaimDto userOperationClaimDto)
+    public async Task<DeletedUserOperationClaimDto> Delete(DeletedUserOperationClaimDto userOperationClaimDto)
     {
         await _userOperationClaimRules.IsUserOperationClaimNotExist(userOperationClaimDto.UserId, userOperationClaimDto.OperationClaimId);
 
@@ -149,7 +169,7 @@ public class UserOperationClaimManager : IUserOperationClaimService
 
         UserOperationClaim deletedUserOperationClaim = await _userOperationClaimRepository.Delete(userOperationClaim, query);
 
-        userOperationClaimDto = new UserOperationClaimDto
+        userOperationClaimDto = new DeletedUserOperationClaimDto
         {
             Id = deletedUserOperationClaim.Id,
             UserId = deletedUserOperationClaim.UserId,

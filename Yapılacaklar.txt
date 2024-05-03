@@ -2,10 +2,11 @@
 # Proje Hakkýnda
 - [x] Repository Desing Pattern Eklenecek.
 - [x] Generic CRUD Operastonlarý Eklnecek.
-- [] Auth (JWT) Sistemi Eklenecek.
-- [] Operation Claim Sistemi Eklenecek.
-- [] User Operation Claim Sistemi Eklenecek.
+- [x] Auth (JWT) Sistemi Eklenecek.
+- [x] Operation Claim Sistemi Eklenecek.
+- [x] User Operation Claim Sistemi Eklenecek.
 - [] W3 Kullanýcý Rolü Alýnýp Sisteme Eklenecek.
+- [] Tüm Features lara Rules(Kurallar) Eklenecek.
 
 # Kullaným
 - [] Admin Paneli Eklenecek.

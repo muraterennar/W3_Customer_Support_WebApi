@@ -1,5 +1,5 @@
 ﻿using Application.Features.UserOperationClaimServices;
-using Domain.Dtos;
+using Application.Features.UserOperationClaimServices.Dtos;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebAPI.Controllers;
@@ -44,21 +44,21 @@ public class UserOperationClaimsController : ControllerBase
     }
 
     [HttpPost("Add")]
-    public async Task<IActionResult> Add(UserOperationClaimDto userOperationClaimDto)
+    public async Task<IActionResult> Add(AddedUserOperationClaimDto userOperationClaimDto)
     {
         var result = await _userOperationClaimService.Add(userOperationClaimDto);
         return Ok(result);
     }
 
     [HttpPut("Update")]
-    public async Task<IActionResult> Update(UserOperationClaimDto userOperationClaimDto)
+    public async Task<IActionResult> Update(UpdatedUserOperationClaimDto userOperationClaimDto)
     {
         var result = await _userOperationClaimService.Update(userOperationClaimDto);
         return Ok(result);
     }
 
     [HttpDelete("Delete")]
-    public async Task<IActionResult> Delete(UserOperationClaimDto userOperationClaimDto)
+    public async Task<IActionResult> Delete(DeletedUserOperationClaimDto userOperationClaimDto)
     {
         var result = await _userOperationClaimService.Delete(userOperationClaimDto);
         return Ok(result);

@@ -1,7 +1,9 @@
-﻿using Application.Features.Auth.Rules;
+﻿using Application.Features.Auth.Dtos;
+using Application.Features.Auth.Rules;
+using Application.Features.Auth.TokenServices;
 using Application.Features.UserService;
 using Core.Entities;
-using Domain.Dtos;
+using Core.Security.JWT;
 using Domain.Entities;
 
 namespace Application.Features.Auth.LoginServices;
@@ -10,44 +12,28 @@ public class LoginManager : ILoginService
 {
     private readonly IUserService _userService;
     private readonly AuthRules _authRules;
+    private readonly ITokenService _tokenService;
 
-    public LoginManager(IUserService userService, AuthRules authRules)
+    public LoginManager(IUserService userService, AuthRules authRules, ITokenService tokenService)
     {
         _userService = userService;
         _authRules = authRules;
+        _tokenService = tokenService;
     }
 
-    public async Task<CommonResponse<LoginResponse>> LoginAsync(LoginDto loginDto)
+    public async Task<CommonResponse<AccessToken>> LoginAsync(LoginDto loginDto)
     {
         await _authRules.IsUserNotExist(loginDto.Username);
         await _authRules.IsPasswordCorrect(loginDto.Username, loginDto.Password);
 
 
-        Employee getEmployee = await _userService.GetByEmailForUserAsync(loginDto.Username);
+        Employee getEmployee = await _userService.GetByUsernameForUserAsync(loginDto.Username);
 
-        //SecurityUser securityUser = new SecurityUser
-        //{
-        //    FirstName = getEmployee.EMPLOYEE_NAME,
-        //    LastName = getEmployee.EMPLOYEE_SURNAME,
-        //    Email = getEmployee.EMPLOYEE_EMAIL,
-        //    EmployeeId = getEmployee.Id,
-        //    Username = getEmployee.EMPLOYEE_USERNAME
-        //};
+        AccessToken accessToken = await _tokenService.CreateAccessToken(getEmployee);
 
-        //var accessToken = JWTHelper.CreateToken(getEmployee);
-        //TODO: Implement JWT Token
-
-
-        return new CommonResponse<LoginResponse>
+        return new CommonResponse<AccessToken>
         {
-            Data = new LoginResponse
-            {
-                Id = getEmployee.Id,
-                Username = getEmployee.EMPLOYEE_USERNAME,
-                FirstName = getEmployee.EMPLOYEE_NAME,
-                LastName = getEmployee.EMPLOYEE_SURNAME,
-                Email = getEmployee.EMPLOYEE_EMAIL
-            },
+            Data = accessToken,
             Message = "Login Success",
             IsSuccess = true
         };

@@ -1,4 +1,4 @@
-﻿namespace Domain.Dtos;
+﻿namespace Application.Features.Auth.Dtos;
 
 public class LoginDto
 {

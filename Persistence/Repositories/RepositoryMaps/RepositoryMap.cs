@@ -7,6 +7,7 @@ namespace Persistence.Repositories.RepositoryMaps;
 
 public class RepositoryMap : IRepositoryMap
 {
+    // User - Employee
     public Employee MapEmployeeFromDataReader(SqlDataReader reader)
     {
 
@@ -77,24 +78,24 @@ public class RepositoryMap : IRepositoryMap
         };
     }
 
-    public OperationClaim MapOperationClaimFromDataReader(SqlDataReader reader)
+    // User Detail
+    private UserDetail MapUserDetailFromDataReader(SqlDataReader reader)
     {
-        return new OperationClaim
+        return new UserDetail
         {
-            Id = reader["Id"] != DBNull.Value ? Convert.ToInt32(reader["Id"]) : 0,
-            Name = reader["Name"] != DBNull.Value ? reader["Name"].ToString() : string.Empty
-        };
-    }
-
-    public UserOperationClaim MapUserOperationClaimFromDataReader(SqlDataReader reader)
-    {
-        return new UserOperationClaim
-        {
-            Id = reader["Id"] != DBNull.Value ? Convert.ToInt32(reader["Id"]) : 0,
-            UserId = reader["UserId"] != DBNull.Value ? Convert.ToInt32(reader["UserId"]) : 0,
-            OperationClaimId = reader["OperationClaimId"] != DBNull.Value ? Convert.ToInt32(reader["OperationClaimId"]) : 0,
-            RECORD_DATE = reader["CreatedDate"] != DBNull.Value ? Convert.ToDateTime(reader["CreatedDate"]) : DateTime.MinValue,
-            UPDATE_DATE = reader["UpdatedDate"] != DBNull.Value ? Convert.ToDateTime(reader["UpdatedDate"]) : DateTime.MinValue
+            Id = reader["EMPLOYEE_ID"] != DBNull.Value ? Convert.ToInt32(reader["EMPLOYEE_ID"]) : 0,
+            CompanyId = reader["COMPANY_ID"] != DBNull.Value ? Convert.ToInt32(reader["COMPANY_ID"]) : 0,
+            OperationClaimId = reader["USER_OPERATION_CLAIM_ID"] != DBNull.Value ? Convert.ToInt32(reader["USER_OPERATION_CLAIM_ID"]) : 0,
+            UserOperationClaimId = reader["OPERATION_CLAIM_ID"] != DBNull.Value ? Convert.ToInt32(reader["OPERATION_CLAIM_ID"]) : 0,
+            W3OperationClaimId = reader["W3_OPERATION_ID"] != DBNull.Value ? Convert.ToInt32(reader["W3_OPERATION_ID"]) : 0,
+            UserNo = reader["EMPLOYEE_NO"] != DBNull.Value ? reader["EMPLOYEE_NO"].ToString() : string.Empty,
+            UserEmail = reader["EMPLOYEE_EMAIL"] != DBNull.Value ? reader["EMPLOYEE_EMAIL"].ToString() : string.Empty,
+            UserFirstname = reader["EMPLOYEE_NAME"] != DBNull.Value ? reader["EMPLOYEE_NAME"].ToString() : string.Empty,
+            UserLastname = reader["EMPLOYEE_SURNAME"] != DBNull.Value ? reader["EMPLOYEE_SURNAME"].ToString() : string.Empty,
+            Username = reader["EMPLOYEE_USERNAME"] != DBNull.Value ? reader["EMPLOYEE_USERNAME"].ToString() : string.Empty,
+            OperationClaimName = reader["OPERATION_NAME"] != DBNull.Value ? reader["OPERATION_NAME"].ToString() : string.Empty,
+            W3OperationClaimName = reader["W3_OPERATION_NAME"] != DBNull.Value ? reader["W3_OPERATION_NAME"].ToString() : string.Empty,
+            PositionName = reader["POSITION_NAME"] != DBNull.Value ? reader["POSITION_NAME"].ToString() : string.Empty
         };
     }
 
@@ -165,7 +166,16 @@ public class RepositoryMap : IRepositoryMap
     }
 
 
+
     // Opeartion Claim
+    public OperationClaim MapOperationClaimFromDataReader(SqlDataReader reader)
+    {
+        return new OperationClaim
+        {
+            Id = reader["Id"] != DBNull.Value ? Convert.ToInt32(reader["Id"]) : 0,
+            Name = reader["Name"] != DBNull.Value ? reader["Name"].ToString() : string.Empty
+        };
+    }
     private void AddOperationClaimParameters(SqlCommand command, OperationClaim operationClaim)
     {
         command.Parameters.AddWithValue("@Name", operationClaim.Name);
@@ -187,6 +197,17 @@ public class RepositoryMap : IRepositoryMap
     }
 
     // User Operation Claim
+    public UserOperationClaim MapUserOperationClaimFromDataReader(SqlDataReader reader)
+    {
+        return new UserOperationClaim
+        {
+            Id = reader["Id"] != DBNull.Value ? Convert.ToInt32(reader["Id"]) : 0,
+            UserId = reader["UserId"] != DBNull.Value ? Convert.ToInt32(reader["UserId"]) : 0,
+            OperationClaimId = reader["OperationClaimId"] != DBNull.Value ? Convert.ToInt32(reader["OperationClaimId"]) : 0,
+            RECORD_DATE = reader["CreatedDate"] != DBNull.Value ? Convert.ToDateTime(reader["CreatedDate"]) : DateTime.MinValue,
+            UPDATE_DATE = reader["UpdatedDate"] != DBNull.Value ? Convert.ToDateTime(reader["UpdatedDate"]) : DateTime.MinValue
+        };
+    }
     private void AddUserOperationClaimParameters(SqlCommand command, UserOperationClaim userOperationClaim)
     {
         command.Parameters.AddWithValue("@UserId", userOperationClaim.UserId);
