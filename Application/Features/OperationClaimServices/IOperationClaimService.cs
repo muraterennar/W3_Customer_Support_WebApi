@@ -1,7 +1,6 @@
 ﻿using Application.Features.OperationClaimServices.Dtos;
 using Core.Entities;
 using Core.Security.Entities;
-using Domain.Dtos;
 
 namespace Application.Features.OperationClaimServices;
 
@@ -12,6 +11,6 @@ public interface IOperationClaimService
     Task<OperationClaim> GetByNameForOpearationClaim(string name);
 
     Task<CommonResponse<AddedOperationClaimDto>> Add(AddedOperationClaimDto operationClaim);
-    Task<CommonResponse<OperationClaim>> Update(OperationClaim operationClaim);
-    Task<CommonResponse<OperationClaim>> Delete(OperationClaim operationClaim);
+    Task<CommonResponse<UpdatedOperationClaimDto>> Update(UpdatedOperationClaimDto operationClaim);
+    Task<CommonResponse<DeletedOperationClaimDto>> Delete(DeletedOperationClaimDto operationClaim);
 }

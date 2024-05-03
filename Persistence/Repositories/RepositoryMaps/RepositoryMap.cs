@@ -86,6 +86,18 @@ public class RepositoryMap : IRepositoryMap
         };
     }
 
+    public UserOperationClaim MapUserOperationClaimFromDataReader(SqlDataReader reader)
+    {
+        return new UserOperationClaim
+        {
+            Id = reader["Id"] != DBNull.Value ? Convert.ToInt32(reader["Id"]) : 0,
+            UserId = reader["UserId"] != DBNull.Value ? Convert.ToInt32(reader["UserId"]) : 0,
+            OperationClaimId = reader["OperationClaimId"] != DBNull.Value ? Convert.ToInt32(reader["OperationClaimId"]) : 0,
+            RECORD_DATE = reader["CreatedDate"] != DBNull.Value ? Convert.ToDateTime(reader["CreatedDate"]) : DateTime.MinValue,
+            UPDATE_DATE = reader["UpdatedDate"] != DBNull.Value ? Convert.ToDateTime(reader["UpdatedDate"]) : DateTime.MinValue
+        };
+    }
+
     private void AddUserParameters(SqlCommand command, Employee user)
     {
         command.Parameters.AddWithValue("@EMPLOYEE_ID", user.Id);
@@ -152,10 +164,48 @@ public class RepositoryMap : IRepositoryMap
         command.Parameters.AddWithValue("@IS_COVID", user.IS_COVID);
     }
 
+
+    // Opeartion Claim
     private void AddOperationClaimParameters(SqlCommand command, OperationClaim operationClaim)
     {
         command.Parameters.AddWithValue("@Name", operationClaim.Name);
         command.Parameters.AddWithValue("@CreatedDate", operationClaim.RECORD_DATE);
         command.Parameters.AddWithValue("@UpdatedDate", operationClaim.UPDATE_DATE ?? (object) DBNull.Value);
+    }
+
+    private void UpdateOperationClaimParameters(SqlCommand command, OperationClaim operationClaim)
+    {
+        command.Parameters.AddWithValue("@Id", operationClaim.Id);
+        command.Parameters.AddWithValue("@Name", operationClaim.Name);
+        command.Parameters.AddWithValue("@CreatedDate", operationClaim.RECORD_DATE);
+        command.Parameters.AddWithValue("@UpdatedDate", operationClaim.UPDATE_DATE ?? (object) DBNull.Value);
+    }
+
+    private void DeleteOperationClaimParameters(SqlCommand command, OperationClaim operationClaim)
+    {
+        command.Parameters.AddWithValue("@Id", operationClaim.Id);
+    }
+
+    // User Operation Claim
+    private void AddUserOperationClaimParameters(SqlCommand command, UserOperationClaim userOperationClaim)
+    {
+        command.Parameters.AddWithValue("@UserId", userOperationClaim.UserId);
+        command.Parameters.AddWithValue("@OperationClaimId", userOperationClaim.OperationClaimId);
+        command.Parameters.AddWithValue("@CreatedDate", userOperationClaim.RECORD_DATE);
+        command.Parameters.AddWithValue("@UpdatedDate", userOperationClaim.UPDATE_DATE ?? (object) DBNull.Value);
+    }
+
+    private void UpdateUserOperationClaimParameters(SqlCommand command, UserOperationClaim userOperationClaim)
+    {
+        command.Parameters.AddWithValue("@Id", userOperationClaim.Id);
+        command.Parameters.AddWithValue("@UserId", userOperationClaim.UserId);
+        command.Parameters.AddWithValue("@OperationClaimId", userOperationClaim.OperationClaimId);
+        command.Parameters.AddWithValue("@CreatedDate", userOperationClaim.RECORD_DATE);
+        command.Parameters.AddWithValue("@UpdatedDate", userOperationClaim.UPDATE_DATE ?? (object) DBNull.Value);
+    }
+
+    private void DeleteUserOperationClaimParameters(SqlCommand command, UserOperationClaim userOperationClaim)
+    {
+        command.Parameters.AddWithValue("@Id", userOperationClaim.Id);
     }
 }

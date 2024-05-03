@@ -26,23 +26,42 @@ namespace WebAPI.Controllers
         }
 
         [HttpGet("GetById/{id}")]
-        public async Task<IActionResult> Get(int id)
+        public async Task<IActionResult> Get([FromRoute] int id)
         {
             var response = await _operationClaimService.GetByIdForOperationClaim(id);
             return Ok(response);
         }
 
-        [HttpGet("GetByName/{name}")]
-        public async Task<IActionResult> Get(string name)
+        [HttpGet("GetByName")]
+        public async Task<IActionResult> Get([FromQuery] string name)
         {
             var response = await _operationClaimService.GetByNameForOpearationClaim(name);
             return Ok(response);
         }
 
         [HttpPost("Add")]
-        public async Task<IActionResult> Add(AddedOperationClaimDto operationClaim)
+        public async Task<IActionResult> Add([FromBody] AddedOperationClaimDto operationClaim)
         {
             CommonResponse<AddedOperationClaimDto> response = await _operationClaimService.Add(operationClaim);
+            return Ok(response);
+        }
+
+        [HttpPut("Update")]
+        public async Task<IActionResult> Update([FromBody] UpdatedOperationClaimDto operationClaim)
+        {
+            CommonResponse<UpdatedOperationClaimDto> response = await _operationClaimService.Update(operationClaim);
+            return Ok(response);
+        }
+
+        [HttpDelete("Delete/{id}")]
+        public async Task<IActionResult> Delete([FromRoute] int id)
+        {
+            DeletedOperationClaimDto operationClaim = new DeletedOperationClaimDto
+            {
+                Id = id
+            };
+
+            CommonResponse<DeletedOperationClaimDto> response = await _operationClaimService.Delete(operationClaim);
             return Ok(response);
         }
     }

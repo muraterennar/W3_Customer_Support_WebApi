@@ -35,7 +35,7 @@ public class BaseRepository<T> : IRepository<T>
                 {
                     while(await reader.ReadAsync())
                     {
-                        T entity = RunGetsMethods(reader);
+                        T entity = RunMethods(reader);
                         datas.Add(entity);
                     }
                 }
@@ -63,7 +63,7 @@ public class BaseRepository<T> : IRepository<T>
                 {
                     while(await reader.ReadAsync())
                     {
-                        entity = RunGetsMethods(reader);
+                        entity = RunMethods(reader);
                     }
                 }
 
@@ -77,9 +77,6 @@ public class BaseRepository<T> : IRepository<T>
 
     public async Task<T> Add(T entity , string query)
     {
-        if(entity == null)
-            throw new ArgumentNullException(nameof(entity));
-
         using(SqlConnection connection = new SqlConnection(_conguration.GetConnectionString("DefaultConnection")))
         {
             using(SqlCommand command = new SqlCommand(query, connection))
@@ -88,7 +85,7 @@ public class BaseRepository<T> : IRepository<T>
                 if(command.Connection.State == ConnectionState.Closed)
                     connection.Open();
 
-                RunCreadUpdateAndDeleteMethods(command, entity);
+                RunMethods(command, entity, QueryType.Add);
 
                 await command.ExecuteNonQueryAsync();
 
@@ -100,18 +97,51 @@ public class BaseRepository<T> : IRepository<T>
         return entity;
     }
 
-    public Task<T> Delete(T entity)
+    public async Task<T> Update(T entity, string query)
     {
-        throw new NotImplementedException();
+        using(SqlConnection connection = new SqlConnection(_conguration.GetConnectionString("DefaultConnection")))
+        {
+            using(SqlCommand command = new SqlCommand(query, connection))
+            {
+
+                if(command.Connection.State == ConnectionState.Closed)
+                    connection.Open();
+
+                RunMethods(command, entity, QueryType.Update);
+
+                await command.ExecuteNonQueryAsync();
+
+                if(command.Connection.State == ConnectionState.Open)
+                    connection.Close();
+            }
+        }
+
+        return entity;
     }
 
-    public Task<T> Update(T entity)
+    public async Task<T> Delete(T entity, string query)
     {
-        throw new NotImplementedException();
+        using(SqlConnection connection = new SqlConnection(_conguration.GetConnectionString("DefaultConnection")))
+        {
+            using(SqlCommand command = new SqlCommand(query, connection))
+            {
+
+                if(command.Connection.State == ConnectionState.Closed)
+                    connection.Open();
+
+                RunMethods(command, entity, QueryType.Delete);
+
+                await command.ExecuteNonQueryAsync();
+
+                if(command.Connection.State == ConnectionState.Open)
+                    connection.Close();
+            }
+        }
+
+        return entity;
     }
 
-
-    private T RunGetsMethods(SqlDataReader reader)
+    private T RunMethods(SqlDataReader reader)
     {
         string typeName = typeof(T).Name;
         var methodName = $"Map{typeName}FromDataReader";
@@ -128,10 +158,10 @@ public class BaseRepository<T> : IRepository<T>
         }
     }
 
-    private T RunCreadUpdateAndDeleteMethods(SqlCommand command, T user)
+    private T RunMethods(SqlCommand command, T user, QueryType queryType)
     {
         string typeName = typeof(T).Name;
-        var methodName = $"Add{typeName}Parameters";
+        var methodName = $"{queryType}{typeName}Parameters";
 
         MethodInfo method = _mapModel.GetType().GetMethod(methodName, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
 
@@ -143,5 +173,12 @@ public class BaseRepository<T> : IRepository<T>
         {
             throw new Exception($"Method with name {methodName} not found.");
         }
+    }
+
+    public enum QueryType
+    {
+        Add,
+        Update,
+        Delete
     }
 }
